@@ -16,7 +16,10 @@ import {
   
   function TaskArea() {
     const { register, handleSubmit, reset } = useForm<FormValue>();
-    const [todos, setTodos] = useState<TodoType[]>([]);
+    const [todos, setTodos] = useState<TodoType[]>(() => {
+      const savedTodos = window.localStorage.getItem('todos');
+      return savedTodos ? JSON.parse(savedTodos) : [];
+    });
     const formSubmit = (data: FormValue) => {
       if (todos.some((t) => t.title === data.todo)) {
         toast.error("Tast already exist");
@@ -45,7 +48,7 @@ import {
       );
       toast.success("Task changed");
     };
-  
+    window.localStorage.setItem('todos', JSON.stringify(todos))
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100">
         <div className="max-w-2xl mx-auto pt-16 px-4">
